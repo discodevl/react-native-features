@@ -1,5 +1,5 @@
-import { View, Alert, StyleSheet } from "react-native";
-import React from "react";
+import { View, Alert, StyleSheet, Image, Text } from "react-native";
+import React, { useState } from "react";
 import OutlinedButton from "../UI/OutlinedButton";
 import { Colors } from "../../constants/colors";
 import {
@@ -11,6 +11,8 @@ import {
 export default function LocationPicker() {
   const [locationPermissionInfo, requestPermission] =
     useForegroundPermissions();
+  
+  const [locationPicked, setLocationPicked] = useState();
 
   async function verifyPermission() {
     if (locationPermissionInfo.status === PermissionStatus.UNDETERMINED) {
@@ -37,14 +39,22 @@ export default function LocationPicker() {
       
     }
     const location = await getCurrentPositionAsync();
+    setLocationPicked(`${location.coords.latitude},${location.coords.longitude}`);
     console.log(location);
   }
 
   function pickOnMapHandler() {}
 
+  let locationPreview = <Text>No location picked yet</Text>
+
+  if(locationPicked) {
+    locationPreview = <Image source={{uri: 'https://www.impala.pt/wp-content/uploads/2019/01/Google-maps.jpg'}} style={styles.image} />
+  }
   return (
     <View>
-      <View style={styles.mapPreview}></View>
+      <View style={styles.mapPreview}>
+        {locationPreview}
+      </View>
       <View style={styles.actions}>
         <OutlinedButton icon="location" onPress={getLocationHandler}>
           Locate User
@@ -66,10 +76,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.primary100,
     borderRadius: 4,
+    overflow: "hidden"
   },
   actions: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    overflow: "hidden",
   },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 4,
+
+  }
 });
