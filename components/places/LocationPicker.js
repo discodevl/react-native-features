@@ -7,8 +7,10 @@ import {
   useForegroundPermissions,
   PermissionStatus
 } from "expo-location";
+import { useNavigation } from "@react-navigation/native";
 
 export default function LocationPicker() {
+  const navigation = useNavigation()
   const [locationPermissionInfo, requestPermission] =
     useForegroundPermissions();
   
@@ -43,7 +45,9 @@ export default function LocationPicker() {
     console.log(location);
   }
 
-  function pickOnMapHandler() {}
+  function pickOnMapHandler() {
+    navigation.navigate('Map');
+  }
 
   let locationPreview = <Text>No location picked yet</Text>
 
