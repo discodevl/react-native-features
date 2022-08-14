@@ -20,10 +20,12 @@ export default function PlaceForm({onCreatePlace}) {
   }
   const takeLocationHandler = useCallback((location) => {
     setPickedLocation(location);
+    console.log(pickedLocation);
   }, []);
 
   function savePlaceHandler() {
-    const placeData = new Place(title, selectedImage, pickedLocation);
+    console.log(pickedLocation)
+    const placeData = new Place(title, selectedImage, pickedLocation || {});
     onCreatePlace(placeData);
   }
 
