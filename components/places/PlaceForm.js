@@ -1,24 +1,41 @@
 import { View, Text, ScrollView, TextInput, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import {Place} from '../../models/place'
+import React, { useCallback, useState } from "react";
 import { Colors } from "../../constants/colors";
 import ImagePicker from "./ImagePicker";
 import LocationPicker from "./LocationPicker";
+import Button from "../UI/Button";
 
-export default function PlaceForm() {
+export default function PlaceForm({onCreatePlace}) {
   const [title, setTitle] = useState("");
+  const [pickedLocation, setPickedLocation] = useState();
+  const [selectedImage, setSelectedImage] = useState();
 
   function changeTitleHandler(enteredText) {
     setTitle(enteredText);
+  }
+
+  function takeImageHandler(uri) {
+    setSelectedImage(uri)
+  }
+  const takeLocationHandler = useCallback((location) => {
+    setPickedLocation(location);
+  }, []);
+
+  function savePlaceHandler() {
+    const placeData = new Place(title, selectedImage, pickedLocation);
+    onCreatePlace(placeData);
   }
 
   return (
     <ScrollView style={styles.form}>
       <View>
         <Text style={styles.label}>Title</Text>
-        <TextInput style={styles.input} onChangeText={changeTitleHandler} />
+        <TextInput style={styles.input} onChangeText={changeTitleHandler} value={title}/>
       </View>
-      <ImagePicker />
-      <LocationPicker />
+      <ImagePicker onTakeImage={takeImageHandler}/>
+      <LocationPicker onPickLocation={takeLocationHandler}/>
+      <Button onPress={savePlaceHandler}>Add Place</Button>
     </ScrollView>
   );
 }
